@@ -1,9 +1,10 @@
 # 导入必要的库
 import re
-def list_change(i, o):
+
+
+def list_change(i):
     # 定义文件路径
     input_file_path = i  # 请替换为您的输入文件路径
-    output_file_path = o  # 请替换为您想要保存输出文件的路径
 
     # 创建一个空列表来存储处理后的数据
     processed_data = []
@@ -29,11 +30,4 @@ def list_change(i, o):
         new_row = [x - y for x, y in zip(row, fourth_row)]
         result_data.append(new_row)
 
-
-    with open(output_file_path, 'w') as output_file:
-        for row in result_data:
-            output_file.write(' '.join(map(str, row)) + '\n')
-
-    # 打印处理后的数据
-    for row in result_data:
-        print(row)
+    return result_data
