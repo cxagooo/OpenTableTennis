@@ -1,6 +1,15 @@
 # 导入必要的库
 import re
+import glob
+import numpy as np
 
+
+def get_data(d: str) -> np.array:
+    data = []
+    for _dir in glob.glob(f'{d}/output*/'):
+        data.append([list_change(f) for f in glob.glob(_dir + 'use*.txt')])
+    data = np.array(data)
+    return data
 
 def list_change(i):
     # 定义文件路径
