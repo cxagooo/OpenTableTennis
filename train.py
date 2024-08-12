@@ -2,7 +2,7 @@ from demo import detect
 from OpenAndPick import pick
 from cut import extract_frames
 import os
-from list_change import get_data
+from utils import get_data
 #截取帧
 for i in range(57):
     #os.mkdir(f'CutFrame_Output/output{i}')

@@ -2,7 +2,7 @@ from moviepy.editor import VideoFileClip
 from moviepy.tools import cvsecs
 from PIL import Image
 import os
-from list_change import get_data
+from utils import get_data
 def extract_frames(input_path, output_dir, frame_output):
     # 创建输出目录如果不存在
 
