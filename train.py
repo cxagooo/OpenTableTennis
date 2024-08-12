@@ -9,7 +9,7 @@ for i in range(57):
     p = i + 24
     video_path = f'/home/cxgao/Videos/data/21-标记-{i}.mp4'
     output_dir = f'CutFrame_Output/output{p}'
-    extract_frames(video_path, output_dir)
+    extract_frames(video_path, output_dir, 7)
 for i in range(24, 81):
     for j in range(7):
         path = f'CutFrame_Output/output{i}/frame_{j}.png'

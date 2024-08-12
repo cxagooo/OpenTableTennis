@@ -3,7 +3,7 @@ from moviepy.tools import cvsecs
 from PIL import Image
 import os
 from list_change import get_data
-def extract_frames(input_path, output_dir):
+def extract_frames(input_path, output_dir, frame_output):
     # 创建输出目录如果不存在
 
     if not os.path.exists(output_dir):
@@ -19,11 +19,11 @@ def extract_frames(input_path, output_dir):
 
     # 计算每张图片之间的间隔
 
-    interval = duration / 6  # 因为我们要包括首尾帧，所以是6个间隔
+    interval = duration / frame_output - 1  # 因为我们要包括首尾帧，所以是6个间隔
 
     # 提取帧并保存为图片
 
-    for i in range(7):
+    for i in range(frame_output):
         time_point = i * interval
 
         frame = clip.get_frame(time_point)
