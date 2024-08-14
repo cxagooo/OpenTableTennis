@@ -14,9 +14,9 @@ for i in range(55):
     #p = i + 24
     video_path = f'/home/cxgao/Videos/data/22-标记-{i}.mp4'
     output_dir = f'CutFrame_Output/output{i}'
-    adjust_and_extract_frames(video_path, output_dir, 8)
+    adjust_and_extract_frames(video_path, output_dir, 4)
 for i in range(55):
-    for j in range(7):
+    for j in range(3):
         path = f'CutFrame_Output/output{i}/frame_{j}.png'
         print(path)
         output = f'CutFrame_Output/output{i}/tem.txt'
