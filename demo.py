@@ -47,4 +47,4 @@ def detect(path, output, outpath):
     #plt.show()
     return print("success")
     #pick(3, 4, 10)
-#detect('CutFrame_Output/output34/frame_6.png',1,1)
+#detect('/home/cxgao/Pictures/1.png',1,1)
