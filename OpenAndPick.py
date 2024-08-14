@@ -11,5 +11,5 @@ def pick(path, outpath,  m, n, p, q):
                 with open(outpath, 'w') as file:
                     file.write(str(l))
                     file.write(str(b))
-                    file.write(str(z))
                     file.write(str(line))
+                    file.write(str(z))
