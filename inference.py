@@ -14,4 +14,8 @@ def infer(model):
     y_hat = model.predict(data)
     del(data[0])
     del(y_hat[-1])
-    return model(data)
+    r = data-y_hat
+    result = []
+    for f in r:
+        result.append([np.linalg.norm(i) for i in f])
+    return result
