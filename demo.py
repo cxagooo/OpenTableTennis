@@ -38,13 +38,13 @@ def detect(path, output, outpath):
     
     canvas = util.draw_handpose(canvas, all_hand_peaks)
     '''
-    with open(output, 'w') as f:
-        f.write(str(candidate))
-    pick(output, outpath, 3, 4, 10 ,1)
-    #print(candidate)
-    #plt.imshow(canvas[:, :, [2, 1, 0]])
-    #plt.axis('off')
-    #plt.show()
+    #with open(output, 'w') as f:
+    #    f.write(str(candidate))
+    #pick(output, outpath, 3, 4, 10 ,1)
+    print(candidate)
+    plt.imshow(canvas[:, :, [2, 1, 0]])
+    plt.axis('off')
+    plt.show()
     return print("success")
     #pick(3, 4, 10)
-#detect('/home/cxgao/Pictures/1.png',1,1)
+detect('CutFrame_Output/output5/frame_5.png',1,1)
