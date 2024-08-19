@@ -1,4 +1,4 @@
-from demo import detect
+from demo1 import detect
 from OpenAndPick import pick
 from cut import split_video_into_parts
 import os

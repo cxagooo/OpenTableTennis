@@ -14,7 +14,8 @@ from src.model import bodypose_model
 class Body(object):
     def __init__(self, model_path):
         self.model = bodypose_model()
-        self.model = self.model.cuda()
+        if torch.cuda.is_available():
+            self.model = self.model.cuda()
         model_dict = util.transfer(self.model, torch.load(model_path))
         self.model.load_state_dict(model_dict)
         self.model.eval()
@@ -26,7 +27,7 @@ class Body(object):
         stride = 8
         padValue = 128
         thre1 = 0.5
-        thre2 = 0.1
+        thre2 = 0.5
         multiplier = [x * boxsize / oriImg.shape[0] for x in scale_search]
         heatmap_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 19))
         paf_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 38))
@@ -39,7 +40,8 @@ class Body(object):
             im = np.ascontiguousarray(im)
 
             data = torch.from_numpy(im).float()
-            data = data.cuda()
+            if torch.cuda.is_available():
+                data = data.cuda()
             # data = data.permute([2, 0, 1]).unsqueeze(0).float()
             with torch.no_grad():
                 Mconv7_stage6_L1, Mconv7_stage6_L2 = self.model(data)
@@ -200,17 +202,6 @@ class Body(object):
             if subset[i][-1] < 4 or subset[i][-2] / subset[i][-1] < 0.4:
                 deleteIdx.append(i)
         subset = np.delete(subset, deleteIdx, axis=0)
-        # Limit the number of detected people to `max_people`
-        max_people = 1  # You can set this to the desired maximum number of people
-        if len(subset) > max_people:
-            # Sort subsets by their total score (column -2)
-            subset = subset[subset[:, -2].argsort()[::-1]]  # Sort in descending order
-            # Keep only the top `max_people` rows
-            subset = subset[:max_people]
-
-        # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
-        # candidate: x, y, score, id
-        return candidate, subset
 
         # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
         # candidate: x, y, score, id
@@ -219,7 +210,7 @@ class Body(object):
 if __name__ == "__main__":
     body_estimation = Body('../model/body_pose_model.pth')
 
-    test_image = '../images/ski.jpg'
+    test_image = '../CutFrame_Output/output0/frame_4.png'
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = util.draw_bodypose(oriImg, candidate, subset)
