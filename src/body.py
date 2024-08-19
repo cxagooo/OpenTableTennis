@@ -25,8 +25,8 @@ class Body(object):
         boxsize = 368
         stride = 8
         padValue = 128
-        thre1 = 0.001
-        thre2 = 0.0001
+        thre1 = 0.5
+        thre2 = 0.1
         multiplier = [x * boxsize / oriImg.shape[0] for x in scale_search]
         heatmap_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 19))
         paf_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 38))
