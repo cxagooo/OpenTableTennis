@@ -56,11 +56,17 @@ class Body(object):
 
             # extract outputs, resize, and remove padding
             # heatmap = np.transpose(np.squeeze(net.blobs[output_blobs.keys()[1]].data), (1, 2, 0))  # output 1 is heatmaps
-            heatmap = np.transpose(np.squeeze(Mconv7_stage6_L2), (1, 2, 0))  # output 1 is heatmaps
-            heatmap = cv2.resize(heatmap, (0, 0), fx=stride, fy=stride, interpolation=cv2.INTER_CUBIC)
-            heatmap = heatmap[:imageToTest_padded.shape[0] - pad[2], :imageToTest_padded.shape[1] - pad[3], :]
-            heatmap = cv2.resize(heatmap, (oriImg.shape[1], oriImg.shape[0]), interpolation=cv2.INTER_CUBIC)
+            heatmap = np.transpose(np.squeeze(Mconv7_stage6_L2), (1, 2, 0))  # output 1 is
 
+            heatmap = cv2.resize(heatmap, (0, 0), fx=stride, fy=stride, interpolation=cv2.INTER_CUBIC)
+            # print(heatmap.shape)
+            # input('?')
+            heatmap = heatmap[:imageToTest_padded.shape[0] - pad[2], :imageToTest_padded.shape[1] - pad[3], :]
+            #print(heatmap.shape)
+            # input('?1')
+            heatmap = cv2.resize(heatmap, (oriImg.shape[1], oriImg.shape[0]), interpolation=cv2.INTER_CUBIC)
+            # print(heatmap.shape)
+            # input('?2')
             # paf = np.transpose(np.squeeze(net.blobs[output_blobs.keys()[0]].data), (1, 2, 0))  # output 0 is PAFs
             paf = np.transpose(np.squeeze(Mconv7_stage6_L1), (1, 2, 0))  # output 0 is PAFs
             paf = cv2.resize(paf, (0, 0), fx=stride, fy=stride, interpolation=cv2.INTER_CUBIC)
@@ -226,7 +232,7 @@ class Body(object):
 if __name__ == "__main__":
     body_estimation = Body('../model/body_pose_model.pth')
 
-    test_image = '../CutFrame_Output/output3/frame_0.png'
+    test_image = '../CutFrame_Output/output104/frame_3.png'
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = util.draw_bodypose(oriImg, candidate, subset)

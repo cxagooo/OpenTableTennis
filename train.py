@@ -59,31 +59,31 @@ def verify (number, frames):
             with open(file_path, 'r') as file:
                 lines = file.readlines()
 
-            # 解析第三行的第一个数字
+            # 解析第三行的第2个数字
             third_line = lines[2].strip()  # 去除行尾的换行符
             third_line_elements = third_line.strip('[]').split()  # 去除方括号并按空格分割
-            first_element_of_third_line = float(third_line_elements[0])  # 第一个元素转换为浮点数
+            first_element_of_third_line = float(third_line_elements[1])  # 2一个元素转换为浮点数
+            print(first_element_of_third_line)
             integer_value = int(first_element_of_third_line / 100)  # 除以100并取整
 
-            # 检查该数字是否为5
+            # 检查该数字是否为1
 
-            if integer_value != 5 :
-                if integer_value != 4:
-                    source = f'CutFrame_Output/output{i}/use{j}.txt'
-                    target = f'CutFrame_Output/output{i - 1}/use{j}.txt'
-                    with open(source, 'r') as source_file:
-                        source_lines = source_file.readlines()
-                    # 读取目标文件
-                    with open(target, 'r') as target_file:
-                        target_lines = target_file.readlines()
-                    # 替换第三行
-                    if len(target_lines) > 2:  # 确保目标文件至少有三行
-                        source_lines[2] = target_lines[2]  # 替换第三行
-                    # 写回修改后的源文件
-                    with open(source, 'w') as source_file:
-                        source_file.writelines(source_lines)
-                    print("Third line in", source, "has been replaced.")
-                    print(f'CutFrame_Output/output{i}/use{j}.txt')
+            if integer_value != 10 :
+                source = f'CutFrame_Output/output{i}/use{j}.txt'
+                target = f'CutFrame_Output/output{i - 1}/use{j}.txt'
+                with open(source, 'r') as source_file:
+                    source_lines = source_file.readlines()
+                # 读取目标文件
+                with open(target, 'r') as target_file:
+                    target_lines = target_file.readlines()
+                # 替换第三行
+                if len(target_lines) > 2:  # 确保目标文件至少有三行
+                    source_lines[2] = target_lines[2]  # 替换第三行
+                # 写回修改后的源文件
+                with open(source, 'w') as source_file:
+                    source_file.writelines(source_lines)
+                print("Third line in", source, "has been replaced.")
+                print(f'CutFrame_Output/output{i}/use{j}.txt')
 if __name__ == '__main__':
     verify(149, 7)
     #detect_frames(149, 7)
