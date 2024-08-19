@@ -14,7 +14,6 @@ def detect(path, output, outpath):
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = copy.deepcopy(oriImg)
-    canvas = util.draw_bodypose(canvas, candidate, subset)
     # detect hand
     '''hands_list = util.handDetect(candidate, subset, oriImg)
     
@@ -38,13 +37,13 @@ def detect(path, output, outpath):
     
     canvas = util.draw_handpose(canvas, all_hand_peaks)
     '''
-    #with open(output, 'w') as f:
-    #    f.write(str(candidate))
-    #pick(output, outpath, 3, 4, 10 ,1)
+    with open(output, 'w') as f:
+        f.write(str(candidate))
+    pick(output, outpath, 3, 4, 10 ,1)
     print(candidate)
-    plt.imshow(canvas[:, :, [2, 1, 0]])
-    plt.axis('off')
-    plt.show()
+#    plt.imshow(canvas[:, :, [2, 1, 0]])
+#    plt.axis('off')
+#    plt.show()
     return print("success")
     #pick(3, 4, 10)
-detect('CutFrame_Output/output1/frame_0.png',1,1)
+#detect('CutFrame_Output/output1/frame_0.png',1,1)
