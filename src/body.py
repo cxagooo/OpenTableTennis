@@ -1,3 +1,11 @@
+
+
+# from cupy import toDlpack
+# from cupy import fromDlpack
+from torch.utils.dlpack import to_dlpack
+from torch.utils.dlpack import from_dlpack
+# import cupy as np
+
 import cv2
 import numpy as np
 import math
@@ -26,7 +34,7 @@ class Body(object):
         stride = 8
         padValue = 128
         thre1 = 0.5
-        thre2 = 0.1
+        thre2 = 0.5
         multiplier = [x * boxsize / oriImg.shape[0] for x in scale_search]
         heatmap_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 19))
         paf_avg = np.zeros((oriImg.shape[0], oriImg.shape[1], 38))
@@ -45,6 +53,7 @@ class Body(object):
                 Mconv7_stage6_L1, Mconv7_stage6_L2 = self.model(data)
             Mconv7_stage6_L1 = Mconv7_stage6_L1.cpu().numpy()
             Mconv7_stage6_L2 = Mconv7_stage6_L2.cpu().numpy()
+            print(1)
 
             # extract outputs, resize, and remove padding
             # heatmap = np.transpose(np.squeeze(net.blobs[output_blobs.keys()[1]].data), (1, 2, 0))  # output 1 is heatmaps
@@ -219,7 +228,7 @@ class Body(object):
 if __name__ == "__main__":
     body_estimation = Body('../model/body_pose_model.pth')
 
-    test_image = '../images/ski.jpg'
+    test_image = '../CutFrame_Output/output0/frame_0.png'
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = util.draw_bodypose(oriImg, candidate, subset)
