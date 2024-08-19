@@ -51,8 +51,8 @@ class Body(object):
             # data = data.permute([2, 0, 1]).unsqueeze(0).float()
             with torch.no_grad():
                 Mconv7_stage6_L1, Mconv7_stage6_L2 = self.model(data)
-            Mconv7_stage6_L1 = np.array(Mconv7_stage6_L1.cpu().numpy())
-            Mconv7_stage6_L2 = np.array(Mconv7_stage6_L2.cpu().numpy())
+            Mconv7_stage6_L1 = Mconv7_stage6_L1.cpu().numpy()
+            Mconv7_stage6_L2 = Mconv7_stage6_L2.cpu().numpy()
             print(1)
 
             # extract outputs, resize, and remove padding
