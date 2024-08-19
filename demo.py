@@ -6,14 +6,15 @@ from OpenAndPick import pick
 from src import model
 from src import util
 from src.body import Body
-def detect(path, output, outpath):
-    body_estimation = Body('model/body_pose_model.pth')
+def detect(path, output, outpath, body_estimation):
+
     # hand_estimation = Hand('model/hand_pose_model.pth')
 
     test_image = path
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
-    canvas = copy.deepcopy(oriImg)
+    print(0)
+    # canvas = copy.deepcopy(oriImg)
     # detect hand
     '''hands_list = util.handDetect(candidate, subset, oriImg)
     
@@ -37,12 +38,12 @@ def detect(path, output, outpath):
     
     canvas = util.draw_handpose(canvas, all_hand_peaks)
     '''
-    # with open(output, 'w') as f:
-    #     f.write(str(candidate))
-    # pick(output, outpath, 3, 4, 10 ,1)
-    print(candidate)
-    plt.imshow(canvas[:, :, [2, 1, 0]])
-    plt.axis('off')
-    plt.show()
-    return print("success")
-detect('CutFrame_Output/output1/frame_0.png',1,1)
+    with open(output, 'w') as f:
+        f.write(str(candidate))
+    pick(output, outpath, 3, 4, 10 ,1)
+    # print(candidate)
+    # plt.imshow(canvas[:, :, [2, 1, 0]])
+    # plt.axis('off')0
+    # plt.show()
+    # return print("success")
+# detect('CutFrame_Output/output1/frame_0.png',1,1)
