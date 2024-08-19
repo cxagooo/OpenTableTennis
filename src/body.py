@@ -227,7 +227,7 @@ class Body(object):
 if __name__ == "__main__":
     body_estimation = Body('../model/body_pose_model.pth')
 
-    test_image = '../CutFrame_Output/output0/frame_0.png'
+    test_image = '../CutFrame_Output/output3/frame_0.png'
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = util.draw_bodypose(oriImg, candidate, subset)
