@@ -53,7 +53,6 @@ class Body(object):
                 Mconv7_stage6_L1, Mconv7_stage6_L2 = self.model(data)
             Mconv7_stage6_L1 = Mconv7_stage6_L1.cpu().numpy()
             Mconv7_stage6_L2 = Mconv7_stage6_L2.cpu().numpy()
-            print(1)
 
             # extract outputs, resize, and remove padding
             # heatmap = np.transpose(np.squeeze(net.blobs[output_blobs.keys()[1]].data), (1, 2, 0))  # output 1 is heatmaps

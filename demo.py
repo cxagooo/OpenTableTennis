@@ -6,22 +6,24 @@ from OpenAndPick import pick
 from src import model
 from src import util
 from src.body import Body
-def detect(path, output, outpath):
-    body_estimation = Body('model/body_pose_model.pth')
+
+
+def detect(path, output, outpath, body_estimation):
     # hand_estimation = Hand('model/hand_pose_model.pth')
 
     test_image = path
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
-    canvas = util.draw_bodypose(oriImg, candidate, subset)
+    print(0)
+    # canvas = copy.deepcopy(oriImg)
     # detect hand
     '''hands_list = util.handDetect(candidate, subset, oriImg)
-    
+
     all_hand_peaks = []
     for x, y, w, is_left in hands_list:
         # cv2.rectangle(canvas, (x, y), (x+w, y+w), (0, 255, 0), 2, lineType=cv2.LINE_AA)
         # cv2.putText(canvas, 'left' if is_left else 'right', (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-    
+
         # if is_left:
             # plt.imshow(oriImg[y:y+w, x:x+w, :][:, :, [2, 1, 0]])
             # plt.show()
@@ -34,16 +36,15 @@ def detect(path, output, outpath):
         #     peaks[:, 1] = np.where(peaks[:, 1]==0, peaks[:, 1], peaks[:, 1]+y)
         #     print(peaks)
         all_hand_peaks.append(peaks)
-    
+
     canvas = util.draw_handpose(canvas, all_hand_peaks)
     '''
-    # with open(output, 'w') as f:
-    #     f.write(str(candidate))
-    # pick(output, outpath, 3, 4, 10 ,1)
-    print(candidate)
-    plt.imshow(canvas[:, :, [2, 1, 0]])
-    plt.axis('off')
-    plt.show()
-    #return print("success")
-    #pick(3, 4, 10)
-detect('CutFrame_Output/output0/frame_4.png',1,1)
+    with open(output, 'w') as f:
+        f.write(str(candidate))
+    pick(output, outpath, 3, 4, 10, 1)
+    # print(candidate)
+    # plt.imshow(canvas[:, :, [2, 1, 0]])
+    # plt.axis('off')0
+    # plt.show()
+    # return print("success")
+# detect('CutFrame_Output/output1/frame_0.png',1,1)
