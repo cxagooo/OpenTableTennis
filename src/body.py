@@ -200,6 +200,17 @@ class Body(object):
             if subset[i][-1] < 4 or subset[i][-2] / subset[i][-1] < 0.4:
                 deleteIdx.append(i)
         subset = np.delete(subset, deleteIdx, axis=0)
+        # Limit the number of detected people to `max_people`
+        max_people = 1  # You can set this to the desired maximum number of people
+        if len(subset) > max_people:
+            # Sort subsets by their total score (column -2)
+            subset = subset[subset[:, -2].argsort()[::-1]]  # Sort in descending order
+            # Keep only the top `max_people` rows
+            subset = subset[:max_people]
+
+        # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
+        # candidate: x, y, score, id
+        return candidate, subset
 
         # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
         # candidate: x, y, score, id
