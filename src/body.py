@@ -1,3 +1,11 @@
+
+
+# from cupy import toDlpack
+# from cupy import fromDlpack
+from torch.utils.dlpack import to_dlpack
+from torch.utils.dlpack import from_dlpack
+# import cupy as np
+
 import cv2
 import numpy as np
 import math
@@ -14,8 +22,7 @@ from src.model import bodypose_model
 class Body(object):
     def __init__(self, model_path):
         self.model = bodypose_model()
-        if torch.cuda.is_available():
-            self.model = self.model.cuda()
+        self.model = self.model.cuda()
         model_dict = util.transfer(self.model, torch.load(model_path))
         self.model.load_state_dict(model_dict)
         self.model.eval()
@@ -40,13 +47,13 @@ class Body(object):
             im = np.ascontiguousarray(im)
 
             data = torch.from_numpy(im).float()
-            if torch.cuda.is_available():
-                data = data.cuda()
+            data = data.cuda()
             # data = data.permute([2, 0, 1]).unsqueeze(0).float()
             with torch.no_grad():
                 Mconv7_stage6_L1, Mconv7_stage6_L2 = self.model(data)
-            Mconv7_stage6_L1 = Mconv7_stage6_L1.cpu().numpy()
-            Mconv7_stage6_L2 = Mconv7_stage6_L2.cpu().numpy()
+            Mconv7_stage6_L1 = np.array(Mconv7_stage6_L1.cpu().numpy())
+            Mconv7_stage6_L2 = np.array(Mconv7_stage6_L2.cpu().numpy())
+            print(1)
 
             # extract outputs, resize, and remove padding
             # heatmap = np.transpose(np.squeeze(net.blobs[output_blobs.keys()[1]].data), (1, 2, 0))  # output 1 is heatmaps
@@ -202,6 +209,17 @@ class Body(object):
             if subset[i][-1] < 4 or subset[i][-2] / subset[i][-1] < 0.4:
                 deleteIdx.append(i)
         subset = np.delete(subset, deleteIdx, axis=0)
+        # Limit the number of detected people to `max_people`
+        max_people = 1  # You can set this to the desired maximum number of people
+        if len(subset) > max_people:
+            # Sort subsets by their total score (column -2)
+            subset = subset[subset[:, -2].argsort()[::-1]]  # Sort in descending order
+            # Keep only the top `max_people` rows
+            subset = subset[:max_people]
+
+        # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
+        # candidate: x, y, score, id
+        return candidate, subset
 
         # subset: n*20 array, 0-17 is the index in candidate, 18 is the total score, 19 is the total parts
         # candidate: x, y, score, id
@@ -210,7 +228,7 @@ class Body(object):
 if __name__ == "__main__":
     body_estimation = Body('../model/body_pose_model.pth')
 
-    test_image = '../CutFrame_Output/output0/frame_4.png'
+    test_image = '../CutFrame_Output/output0/frame_0.png'
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     canvas = util.draw_bodypose(oriImg, candidate, subset)
