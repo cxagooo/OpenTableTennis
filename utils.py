@@ -2,6 +2,9 @@ from sklearn.model_selection import train_test_split
 import re
 import glob
 import numpy as np
+import torch
+import torch.nn.functional as F
+
 
 def split_dataset(X, y, test_val_size=0.2, random_state=None):
     train_x = X[:int(len(X)*(1-test_val_size))]
@@ -69,4 +72,32 @@ def restore_changes(data, index, input_file_path=None):
         result_data.append(frame_data)
     return result_data
 
+
+def create_gaussian_kernel(kernel_size, sigma):
+    x = torch.arange(kernel_size).float() - kernel_size // 2
+    xx, yy = torch.meshgrid(x, x)
+    kernel = torch.exp(-(xx ** 2 + yy ** 2) / (2 * sigma ** 2))
+    kernel /= kernel.sum()
+    return kernel.unsqueeze(0).unsqueeze(0)
+
+
+def gpu_gaussian_filter_torch(image, sigma, kernel_size=5):
+    # 将输入图像转换为torch张量并移动到GPU
+    # image_gpu = torch.from_numpy(image).float().to('cuda')
+    image_gpu = image.float()
+    if len(image.shape) == 2:  # 单通道图像
+        image_gpu = image_gpu.unsqueeze(0).unsqueeze(0)
+    elif len(image.shape) == 3:  # 多通道图像
+        image_gpu = image_gpu.permute(2, 0, 1).unsqueeze(0)
+
+    # 创建高斯核
+    kernel = create_gaussian_kernel(kernel_size, sigma).to('cuda')
+
+    # 应用卷积
+    filtered_image = F.conv2d(image_gpu, kernel, padding=kernel_size // 2)
+
+    # 将结果转换回NumPy数组
+    # filtered_image_cpu = filtered_image.squeeze().cpu().numpy()
+    filtered_image_cpu = filtered_image.squeeze()
+    return filtered_image_cpu
 
