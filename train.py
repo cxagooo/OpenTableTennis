@@ -1,16 +1,32 @@
 import time
-
+import pandas as pd
 from demo1 import detect
 from OpenAndPick import pick
 from cut import split_video_into_parts
-import os
+import numpy as np
 from utils import get_data
 from src.body import Body
 from threading import Thread
 import torch
 from concurrent.futures import ThreadPoolExecutor
 
-
+def data_change (data):
+    # 将数据转换为 DataFrame
+    # 这里我们假设数据中有 149 个序列，每个序列有 7 个时间步，每个时间步有 3 个特征，每个特征有 2 个数值
+    # 因此，data 的形状为 (149, 7, 3, 2)
+    sequences, sequence_length, features, values_per_feature = data.shape
+    # 将数据重塑为 (sequences * sequence_length, features * values_per_feature)
+    reshaped_data = data.reshape(-1, features * values_per_feature)
+    # 创建 DataFrame
+    columns = [f'Feature_{i}_{j}' for i in range(features) for j in range(values_per_feature)]
+    df = pd.DataFrame(reshaped_data, columns=columns)
+    # 添加序列和时间步索引
+    df['Sequence'] = np.repeat(np.arange(sequences), sequence_length)
+    df['TimeStep'] = np.tile(np.arange(sequence_length), sequences)
+    # 重新排序列
+    df = df[['Sequence', 'TimeStep'] + columns]
+    # 保存为 CSV 文件
+    df.to_csv('data.csv', index=False)
 def get_gpu_memory_info():
     # 获取GPU的总显存、已分配显存和缓存显存
     total_memory = torch.cuda.get_device_properties(0).total_memory
@@ -84,9 +100,14 @@ def verify (number, frames):
                     source_file.writelines(source_lines)
                 print("Third line in", source, "has been replaced.")
                 print(f'CutFrame_Output/output{i}/use{j}.txt')
+def write_data (path):
+    with open(path, 'w') as f:
+        f.write(str(get_data('CutFrame_Output')))
 if __name__ == '__main__':
-    verify(149, 7)
+    #verify(149, 7)
     #detect_frames(149, 7)
+    data = get_data('CutFrame_Output')
+    data_change(data)
 
 
 
