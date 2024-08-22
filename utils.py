@@ -102,3 +102,21 @@ def gpu_gaussian_filter_torch(image, sigma, kernel_size=5):
     filtered_image_cpu = filtered_image.squeeze()
     return filtered_image_cpu
 
+def replace_data(d: str) -> np.array:
+    for _dir in glob.glob(f'{d}/output*/'):
+        [replace_last_line_with_zeros(f) for f in glob.glob(_dir + 'use*.txt')]
+
+def replace_last_line_with_zeros(file_path):
+    # 读取文件中的所有数据
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+
+    # 将最后一行替换为零
+    if lines:
+        # last_line = np.zeros_like(np.fromstring(lines[-1], sep=' '))
+        last_line = np.array([[0, 0, 0, 0]])
+        lines[-1] = ' '.join(map(str, last_line)) + '\n'
+
+    # 将数据写回文件
+    with open(file_path, 'w') as file:
+        file.writelines(lines)
