@@ -59,6 +59,7 @@ def list_change(i):
     return result_data
 
 def restore_changes(data, index, input_file_path=None):
+    data = data.reshape(-1, 3, 2)
     result_data = []
 
     if not input_file_path:
