@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import pickle
+import cv2
 
 
 def split_dataset(X, y, test_val_size=0.2, random_state=None):
@@ -130,3 +131,13 @@ def save_obj(obj, name):
 def load_obj(name):
     with open(f'{name}.pkl', 'rb') as f:
         return pickle.load(f)
+
+def pointing(index, data):
+    points_ori = restore_changes(data[index], index, None)
+    for n, f in enumerate(points_ori):
+        img = cv2.imread(f'./CutFrame_Output/output{index}/frame_{n}.png')
+        for q, p in enumerate(points_ori[n]):
+            print((p[0], p[1]))
+            cv2.circle(img, (int(p[0]), int(p[1])), 3, (255, 0, 0), -1)
+            cv2.putText(img, str(q), (int(p[0]), int(p[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.imwrite(f'ori_visualized/output{index}_{n}.png', img)
