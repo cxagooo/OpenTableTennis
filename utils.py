@@ -4,6 +4,7 @@ import glob
 import numpy as np
 import torch
 import torch.nn.functional as F
+import pickle
 
 
 def split_dataset(X, y, test_val_size=0.2, random_state=None):
@@ -120,3 +121,11 @@ def replace_last_line_with_zeros(file_path):
     # 将数据写回文件
     with open(file_path, 'w') as file:
         file.writelines(lines)
+
+def save_obj(obj, name):
+    with open(f'{name}.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name):
+    with open(f'{name}.pkl', 'rb') as f:
+        return pickle.load(f)
