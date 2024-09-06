@@ -124,7 +124,8 @@ def replace_last_line_with_zeros(file_path):
 
 def save_obj(obj, name):
     with open(f'{name}.pkl', 'wb') as f:
-        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+        # pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(obj, f, protocol=4)
 
 def load_obj(name):
     with open(f'{name}.pkl', 'rb') as f:
