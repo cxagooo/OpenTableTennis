@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 import pickle
 import cv2
-
+import pandas as pd
 
 def split_dataset(X, y, test_val_size=0.2, random_state=None):
     train_x = X[:int(len(X)*(1-test_val_size))]
@@ -141,3 +141,39 @@ def pointing(index, data):
             cv2.circle(img, (int(p[0]), int(p[1])), 3, (255, 0, 0), -1)
             cv2.putText(img, str(q), (int(p[0]), int(p[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.imwrite(f'ori_visualized/output{index}_{n}.png', img)
+
+# def correcting():
+#     a=[]
+#     files = glob.glob('./output_new/*')
+#     for i in files:
+#         match = re.match(r'./output_new/output(\d+)_(\d+).json', i)
+#         a.append((int(match.group(1)), int(match.group(2))))
+#     b = [pd.read_json(i)['content'][0] for i in files]
+#     for j,i in enumerate(a):
+#         print(j)
+#         print(i)
+#         with open(f'./CutFrame_Output/output{i[0]}/use{i[1]}.txt', 'r+') as f:
+#             lines = f.readlines()
+#             f.truncate(0)
+#             print(b[0])
+#             lines0 = [[b[j][k]['x'],b[j][k]['y'],0,0] for k in range(0,len(b[j]))]
+#             print(lines0)
+#             for k in range(0,len(b[j])):
+#                 print(lines)
+#                 lines[k] = ' '.join(str(np.array(lines0[k])))
+#                 print(lines[k])
+#             f.writelines(lines)
+def correcting():
+    a=[]
+    files = glob.glob('./output_new/*')
+    for i in files:
+        match = re.match(r'./output_new/output(\d+)_(\d+).json', i)
+        a.append((int(match.group(1)), int(match.group(2))))
+    b = [pd.read_json(i)['content'][0] for i in files]
+    for j,i in enumerate(a):
+        with open(f'./CutFrame_Output/output{i[0]}/use{i[1]}.txt', 'w') as f:
+            lines0 = [[b[j][k]['x'],b[j][k]['y'],0,0] for k in range(0,len(b[j]))]
+            lines0.append([0,0,0,0])
+            lines = [str(np.array(i))+'\n' for i in lines0]
+            f.writelines(lines)
+
