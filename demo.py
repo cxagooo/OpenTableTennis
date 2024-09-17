@@ -6,16 +6,18 @@ from OpenAndPick import pick
 from src import model
 from src import util
 from src.body import Body
+import os
 
-
-def detect(path, output, outpath, body_estimation):
+def detect(path, output, outpath, output_folder, filename):
     # hand_estimation = Hand('model/hand_pose_model.pth')
-
+    body_estimation = Body('model/body_pose_model.pth')
+    device = 'cuda:0'  # 假设你使用的是第一个 GPU
+    body_estimation = body_estimation.to(device)
     test_image = path
     oriImg = cv2.imread(test_image)  # B,G,R order
     candidate, subset = body_estimation(oriImg)
     print(0)
-    # canvas = copy.deepcopy(oriImg)
+    canvas = copy.deepcopy(oriImg)
     # detect hand
     '''hands_list = util.handDetect(candidate, subset, oriImg)
 
@@ -42,9 +44,11 @@ def detect(path, output, outpath, body_estimation):
     with open(output, 'w') as f:
         f.write(str(candidate))
     pick(output, outpath, 3, 4, 10, 1)
-    # print(candidate)
-    # plt.imshow(canvas[:, :, [2, 1, 0]])
+    print(candidate)
+    #保存图片
+    plt.imsave(os.path.join(output_folder, filename), canvas[:, :, [2, 1, 0]])
+    #plt.imsave(canvas[:, :, [2, 1, 0]])
     # plt.axis('off')0
     # plt.show()
     # return print("success")
-# detect('CutFrame_Output/output1/frame_0.png',1,1)
+detect('CutFrame_Output/output1/frame_0.png',1,1,1,1)

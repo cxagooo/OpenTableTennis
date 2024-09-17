@@ -9,7 +9,8 @@ from src.body import Body
 from threading import Thread
 import torch
 from concurrent.futures import ThreadPoolExecutor
-
+import os
+import csv
 def data_change (data):
     # 将数据转换为 DataFrame
     # 这里我们假设数据中有 149 个序列，每个序列有 7 个时间步，每个时间步有 3 个特征，每个特征有 2 个数值
@@ -27,6 +28,52 @@ def data_change (data):
     df = df[['Sequence', 'TimeStep'] + columns]
     # 保存为 CSV 文件
     df.to_csv('data.csv', index=False)
+
+
+
+def txt_to_csv(path, number_of_dir, number_of_use):
+
+
+    # 目录路径
+    base_dir = path
+    output_csv_file = 'all_data.csv'
+
+    # 创建或清空输出文件
+    with open(output_csv_file, 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+        # 写入表头
+        csvwriter.writerow(['Output Folder', 'Use File', 'Data'])
+
+    # 遍历所有的output文件夹
+    for output_folder in range(number_of_dir):
+        folder_path = os.path.join(base_dir, f'output{output_folder}')
+        if not os.path.isdir(folder_path):
+            print(f"Folder {folder_path} does not exist.")
+            continue
+
+        # 遍历use文件
+        for use_file in range(number_of_use):
+            txt_file_path = os.path.join(folder_path, f'use{use_file}.txt')
+
+            # 检查文件是否存在
+            if not os.path.isfile(txt_file_path):
+                print(f"File {txt_file_path} does not exist.")
+                continue
+
+            # 读取txt文件内容并追加到csv文件
+            with open(txt_file_path, 'r') as txtfile:
+                lines = txtfile.readlines()
+
+            # 追加到csv文件
+            with open(output_csv_file, 'a', newline='') as csvfile:
+                csvwriter = csv.writer(csvfile)
+                for line in lines:
+                    row = line.strip().strip('[]').split()
+                    row = [float(i) for i in row]
+                    csvwriter.writerow([f'output{output_folder}', f'use{use_file}'] + row)
+
+            print(f"Appended data from {txt_file_path} to {output_csv_file}")
 def get_gpu_memory_info():
     # 获取GPU的总显存、已分配显存和缓存显存
     total_memory = torch.cuda.get_device_properties(0).total_memory
@@ -106,8 +153,9 @@ def write_data (path):
 if __name__ == '__main__':
     #verify(149, 7)
     #detect_frames(149, 7)
-    data = get_data('CutFrame_Output')
-    data_change(data)
+    #data = get_data('CutFrame_Output')
+    #data_change(data)
+    txt_to_csv("CutFrame_Output", 149, 7)
 
 
 
