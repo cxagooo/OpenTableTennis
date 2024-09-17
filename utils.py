@@ -177,3 +177,8 @@ def correcting():
             lines = [str(np.array(i))+'\n' for i in lines0]
             f.writelines(lines)
 
+def readCsv():
+    a = np.delete(np.array(pd.read_csv("all_data.csv")), 0, axis=1)
+    b = np.delete(a, 0, axis=1)
+    b = b.reshape(int(len(b) / 7), 7, 6)
+    return b.astype(np.float16)
