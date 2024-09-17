@@ -32,7 +32,8 @@ def data_change (data):
 
 
 def txt_to_csv(path, number_of_dir, number_of_use):
-
+    import os
+    import csv
 
     # 目录路径
     base_dir = path
@@ -43,7 +44,7 @@ def txt_to_csv(path, number_of_dir, number_of_use):
         csvwriter = csv.writer(csvfile)
 
         # 写入表头
-        csvwriter.writerow(['Output Folder', 'Use File', 'Data'])
+        csvwriter.writerow(['Output Folder', 'Use File', 'X0', 'Y0', 'X1', 'Y1', 'X2', 'Y2'])
 
     # 遍历所有的output文件夹
     for output_folder in range(number_of_dir):
@@ -61,19 +62,33 @@ def txt_to_csv(path, number_of_dir, number_of_use):
                 print(f"File {txt_file_path} does not exist.")
                 continue
 
-            # 读取txt文件内容并追加到csv文件
-            with open(txt_file_path, 'r') as txtfile:
-                lines = txtfile.readlines()
+            # 存储前三组XY对
+            xy_pairs = []
 
-            # 追加到csv文件
-            with open(output_csv_file, 'a', newline='') as csvfile:
-                csvwriter = csv.writer(csvfile)
+            # 读取txt文件内容
+            with open(txt_file_path, 'r') as txtfile:
+                lines = txtfile.readlines()[:-1]  # 忽略最后一行
                 for line in lines:
                     row = line.strip().strip('[]').split()
-                    row = [float(i) for i in row]
-                    csvwriter.writerow([f'output{output_folder}', f'use{use_file}'] + row)
+                    if len(row) == 4:
+                        x, y = float(row[0]), float(row[1])
+                        xy_pairs.append((x, y))
 
-            print(f"Appended data from {txt_file_path} to {output_csv_file}")
+                    # 如果已经有三组XY对，则停止读取
+                    if len(xy_pairs) == 3:
+                        break
+
+            # 将数据写入CSV文件
+            if len(xy_pairs) == 3:
+                x0, y0 = xy_pairs[0]
+                x1, y1 = xy_pairs[1]
+                x2, y2 = xy_pairs[2]
+
+                with open(output_csv_file, 'a', newline='') as csvfile:
+                    csvwriter = csv.writer(csvfile)
+                    csvwriter.writerow([f'output{output_folder}', f'use{use_file}', x0, y0, x1, y1, x2, y2])
+
+                print(f"Appended merged data from {txt_file_path} to {output_csv_file}")
 def get_gpu_memory_info():
     # 获取GPU的总显存、已分配显存和缓存显存
     total_memory = torch.cuda.get_device_properties(0).total_memory
